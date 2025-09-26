@@ -2,68 +2,261 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Widy Store - Toko Sepatu</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Toko Makeup Cantik</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e6d4f6, #f8e8ff);
+      color: #4b3d5a;
+    }
+
+    header {
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(90deg, #caa8f5, #d8b4fe);
+      color: white;
+      border-bottom-left-radius: 30px;
+      border-bottom-right-radius: 30px;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 2.2rem;
+      font-weight: bold;
+    }
+
+    .container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 20px;
+      padding: 30px;
+    }
+
+    .product {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+
+    .product:hover {
+      transform: translateY(-5px);
+    }
+
+    .product img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
+      border-radius: 15px;
+    }
+
+    .product h3 {
+      margin: 10px 0 5px;
+      font-size: 1.1rem;
+    }
+
+    .product p {
+      font-size: 0.9rem;
+      color: #6b5b7a;
+    }
+
+    .product button {
+      margin-top: 10px;
+      background: linear-gradient(90deg, #c084fc, #a78bfa);
+      color: white;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .product button:hover {
+      background: linear-gradient(90deg, #a78bfa, #c084fc);
+    }
+
+    /* Cart */
+    #cartBtn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: linear-gradient(90deg, #c084fc, #a78bfa);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    #cartModal {
+      display: none;
+      position: fixed;
+      top: 50px;
+      right: 20px;
+      width: 320px;
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      padding: 20px;
+      z-index: 1000;
+    }
+
+    #cartItems {
+      max-height: 200px;
+      overflow-y: auto;
+      margin-bottom: 15px;
+    }
+
+    #cartItems p {
+      font-size: 0.9rem;
+      margin: 5px 0;
+      color: #4b3d5a;
+    }
+
+    #cartModal button {
+      margin: 5px;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+    }
+
+    #clearCart {
+      background: #f87171;
+    }
+
+    #checkout {
+      background: #34d399;
+    }
+
+    /* Notification */
+    #notification {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: linear-gradient(90deg, #a78bfa, #c084fc);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      animation: fadeInUp 0.5s ease;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
 </head>
 <body>
   <header>
-    <div class="logo">WidyStore</div>
-    <div class="search">
-      <input type="text" placeholder="Cari sepatu kesayanganmu...">
-    </div>
-    <div class="icons" onclick="openCart()">🛒 👤</div>
+    <h1>✨ Toko Makeup Cantik ✨</h1>
+    <p>Temukan koleksi makeup terbaik untukmu</p>
   </header>
 
-  <nav>
-    <a href="#">Sneakers</a>
-    <a href="#">Formal</a>
-    <a href="#">Sport</a>
-    <a href="#">Boots</a>
-    <a href="#">Sandal</a>
-  </nav>
+  <button id="cartBtn">🛒 Keranjang</button>
 
-  <div class="hero">Selamat Datang di Widy Store</div>
+  <div class="container" id="productList"></div>
 
-  <div class="container">
-    <h2>Produk Pilihan</h2>
-    <div class="products" id="products"></div>
+  <div id="cartModal">
+    <h3>Keranjang Anda</h3>
+    <div id="cartItems"></div>
+    <button id="clearCart">Batalkan</button>
+    <button id="checkout">Pesan</button>
   </div>
 
-  <!-- Modal Produk -->
-  <div class="modal" id="productModal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <img id="modalImg" src="" alt="">
-      <h2 id="modalName"></h2>
-      <p class="price" id="modalPrice"></p>
-      <label>Ukuran: </label>
-      <select id="modalSize">
-        <option>39</option>
-        <option>40</option>
-        <option>41</option>
-        <option>42</option>
-        <option>43</option>
-      </select>
-      <p class="rating">★★★★★</p>
-      <p class="reviews">5 ulasan positif</p>
-      <button class="btn" onclick="addToCart()">Tambahkan ke Keranjang</button>
-    </div>
-  </div>
+  <div id="notification"></div>
 
-  <!-- Modal Keranjang -->
-  <div class="modal" id="cartModal">
-    <div class="modal-content">
-      <span class="close" onclick="closeCart()">&times;</span>
-      <h2>Keranjang Belanja</h2>
-      <div id="cartItems"></div>
-      <p id="cartTotal"></p>
-      <button class="btn" onclick="clearCart()">Batalkan</button>
-    </div>
-  </div>
+  <script>
+    const products = [
+      {id:1, name:"Lip Balm Hanasui", price:37000, desc:"Buat bibirmu semakin cantik.", img:"hanasuinextlevel.avif"},
+      {id:2, name:"Eyelener gel", price:31000, desc:"Memancarkan mata indah nan elegant.", img:"eyelenergel.webp"},
+      {id:3, name:"Foundation dewy", price:98000, desc:"Memberikan hasil dewy dan natural.", img:"dewyfoundation.avif"},
+      {id:4, name:"Blush On", price:45000, desc:"Warna segar untuk pipi merona.", img:"roseblush.avif"},
+      {id:5, name:"Mascara Volumax", price:39000, desc:"Bulu mata lebih panjang & tebal.", img:"mascaravolumax.webp"},
+      {id:6, name:"Lipstik Satin", price:48000, desc:"Menghasilkan warna yang indah dibibirmu.", img:"lipstiksatinpink.webp"},
+      {id:7, name:"Highlighter", price:60000, desc:"Kilau alami untuk wajah bercahaya.", img:"highlighter.jpg"},
+      {id:8, name:"EyeShadow Pallete", price:48000, desc:"memancarkan kecantikan alami .", img:"eyeshadowpallete.jpg"},
+      {id:9, name:"Setting Spray", price:65000, desc:"Makeup tahan lama seharian.", img:"settingspray.jpg"},
+      {id:10, name:"Cushion Compact", price:115000, desc:"Ringan & hasil flawless.", img:"cushion.webp"},
+    ];
 
-  <footer>
-    <p>&copy; 2025 Widy Store | Mirip Lazada Style | Hubungi <a href="#">CS Kami</a></p>
-  </footer>
+    const productList = document.getElementById("productList");
+    const cartBtn = document.getElementById("cartBtn");
+    const cartModal = document.getElementById("cartModal");
+    const cartItems = document.getElementById("cartItems");
+    const clearCart = document.getElementById("clearCart");
+    const checkout = document.getElementById("checkout");
+    const notification = document.getElementById("notification");
 
-  
+    let cart = [];
+
+    // tampilkan produk
+    products.forEach(p => {
+      const div = document.createElement("div");
+      div.className = "product";
+      div.innerHTML = `
+        <img src="${p.img}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>${p.desc}</p>
+        <p><b>Rp ${p.price.toLocaleString()}</b></p>
+        <button onclick="addToCart(${p.id})">Tambah ke Keranjang</button>
+      `;
+      productList.appendChild(div);
+    });
+
+    function addToCart(id) {
+      const product = products.find(p => p.id === id);
+      cart.push(product);
+      updateCart();
+    }
+
+    function updateCart() {
+      cartItems.innerHTML = "";
+      if(cart.length === 0){
+        cartItems.innerHTML = "<p>Keranjang kosong</p>";
+      } else {
+        cart.forEach((item, i) => {
+          const p = document.createElement("p");
+          p.textContent = `${i+1}. ${item.name} - Rp ${item.price.toLocaleString()}`;
+          cartItems.appendChild(p);
+        });
+      }
+    }
+
+    cartBtn.onclick = () => {
+      cartModal.style.display = cartModal.style.display === "block" ? "none" : "block";
+    };
+
+    clearCart.onclick = () => {
+      cart = [];
+      updateCart();
+    };
+
+    checkout.onclick = () => {
+      if(cart.length === 0){
+        showNotification("Keranjang masih kosong!");
+      } else {
+        cart = [];
+        updateCart();
+        showNotification("💜 Terimakasih atas pesanan anda! Pesanan segera diproses ✨");
+      }
+    };
+
+    function showNotification(msg) {
+      notification.textContent = msg;
+      notification.style.display = "block";
+      setTimeout(() => {
+        notification.style.display = "none";
+      }, 4000);
+    }
+  </script>
+</body>
+</html>
